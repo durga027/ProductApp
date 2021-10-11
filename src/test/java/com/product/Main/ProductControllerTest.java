@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -144,6 +145,24 @@ public class ProductControllerTest {
 
 			}
 		}).andReturn();
+	}
+	
+	@Test
+	public void updateProductTest() throws Exception {
+		Product pOld = new Product("productName1", 12.0, "description1", "category1", 2);
+		pOld.setProdId(101);
+		
+		Product pNew = new Product("productName2", 14.0, "description2", "category2", 3);
+		pNew.setProdId(101);
+		
+		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+		ObjectWriter writer = mapper.writer();
+		String requestString = writer.writeValueAsString(pNew);
+		when(productService.findProduct(101)).thenReturn(pOld);
+		when(productService.updateProduct(101, pNew)).thenReturn(pNew);
+		
+		mockMvc.perform(post("/products/101").contentType(MediaType.APPLICATION_JSON).content(requestString))
+		.andExpect(status().isOk());
 	}
 
 }

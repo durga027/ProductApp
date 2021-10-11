@@ -56,4 +56,16 @@ public class ProductServiceImpl implements ProductService {
 		return products;
 	}
 
+	@Override
+	public Product updateProduct(int prodId, Product product) throws ProductNotFoundException{
+		Product p = findProduct(prodId);
+		p.setProdName(product.getProdName());
+		p.setPrice(product.getPrice());
+		p.setCategory(product.getCategory());
+		p.setDescription(product.getDescription());
+		p.setQoh(product.getQoh());
+		repository.save(p);
+		return p;
+	}
+
 }

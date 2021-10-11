@@ -78,6 +78,24 @@ public class ProductServiceTest {
         verify(repository).findAll();
 	}
 	@Test
+	void updateProductServiceTest() throws ProductNotFoundException{
+		int pid = 10;
+		Product p1 = new Product("productName1", 12.0, "description1", "category1", 2);
+		Product p2 = new Product("productName2", 14.0, "description2", "category2", 1);
+		p1.setProdId(pid);
+		p2.setProdId(pid);
+		Optional<Product> product = Optional.of(p1);
+		when(repository.findById(pid)).thenReturn(product);
+		Product updatedProduct = productService.updateProduct(pid, p2);
+		assertEquals(updatedProduct.getProdId(), p2.getProdId());
+		assertEquals(updatedProduct.getProdName(), p2.getProdName());
+		assertEquals(updatedProduct.getPrice(), p2.getPrice());
+		assertEquals(updatedProduct.getDescription(), p2.getDescription());
+		assertEquals(updatedProduct.getCategory(), p2.getCategory());
+		assertEquals(updatedProduct.getQoh(), p2.getQoh());
+		verify(repository).save(updatedProduct);
+	}
+	@Test
 	void deleteServiceProductException() throws ProductNotFoundException {
 		int productId=101;
 		Product p = new Product("productName1", 12.0, "description1", "category1", 2);
